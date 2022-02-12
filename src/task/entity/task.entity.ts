@@ -20,6 +20,9 @@ export class Task{
   @Column({type: 'date', nullable:true})
   opening: Date
 
+  @Column()
+  completed: Boolean
+
   @ManyToOne(type => User, user => user.tasks)
   @JoinColumn({name:'user_id'})
   user: User

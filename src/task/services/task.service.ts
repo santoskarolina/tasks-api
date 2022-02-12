@@ -7,7 +7,7 @@ import { TaskDto } from "../dto/create-task.dto";
 
 @Injectable()
 export class TaskService {
-  
+
   constructor(
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
@@ -19,14 +19,26 @@ export class TaskService {
     const user = await this.userService.findUserByEmail(user_online.email)
     task.user = user
     task.opening = new Date()
+    task.completed = false
     return this.taskRepository.save(task)
   }
 
-  async find(user_online:any){
+  async findOpen(user_online:any): Promise<Task[]>{
     const user = await this.userService.findUserByEmail(user_online.email)
-    return this.taskRepository.find({
+    return await this.taskRepository.find({
       where: {
-        user: user
+        user: user,
+        completed: false
+      }
+    })
+  }
+
+  async findClose(user_online:any): Promise<Task[]>{
+    const user = await this.userService.findUserByEmail(user_online.email)
+    return await this.taskRepository.find({
+      where: {
+        user: user,
+        completed: true
       }
     })
   }
@@ -63,7 +75,8 @@ export class TaskService {
       .createQueryBuilder()
       .update(Task)
       .set({
-        completion_date: new Date()
+        completion_date: new Date(),
+        completed: true
       })
       .where("task_id =:task_id", {task_id: id})
       .execute()

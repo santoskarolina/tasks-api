@@ -6,4 +6,5 @@ export class TaskDto{
   completion_date: Date
   opening: Date
   user: User
+  completed: Boolean
 }
