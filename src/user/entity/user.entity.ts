@@ -16,6 +16,9 @@ export class User {
   @Column({type:'varchar', nullable:false, length: 255})
   password:string
 
+  @Column({type:'varchar', nullable:true, length: 255})
+  avatar:string
+
   @OneToMany(type => Task, task => task.user)
   tasks: Task[]
 
