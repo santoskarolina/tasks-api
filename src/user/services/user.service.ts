@@ -30,12 +30,21 @@ export class UserService {
         }
     }
 
-    async create(new_user: UserDto){
-        try{
+    async create(new_user: UserDto) {
+        const user_email = await this.userRepository.findOne({
+            where: {
+                email: new_user.email
+            }
+        })
+        if (user_email) {
+            throw new HttpException({
+                message: 'Email already registered',
+                status: HttpStatus.BAD_REQUEST,
+                error: 'email'
+            }, HttpStatus.BAD_REQUEST)
+        } else {
             new_user.password = crypto.createHmac('sha256', new_user.password).digest('hex')
             return await this.userRepository.save(new_user)
-        }catch (error){
-            return error
         }
     }
 
